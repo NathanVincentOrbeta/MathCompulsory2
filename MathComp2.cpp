@@ -328,7 +328,8 @@ int main() {
 	std::cout << "=== Matrix Operations and LU Factorization Program (Math Compulsory 2 - Nathan) === \n\n";
 
 	try {
-
+		
+		// Task 1a
 		std::cout << "a) reading and printing matrices\n";
 		std::cout << "=================================\n";
 
@@ -336,20 +337,30 @@ int main() {
 		userMatrix1.readFromConsole();
 		userMatrix1.print("Your matrix");
 
+		// Task 1b
 		std::cout << "\nb.) multiplying matrices\n";
-		std::cout << "===========================\n";
+		std::cout << "\n still in early development, matrices needs to be same sizes\n";
+		std::cout << "===============================================================\n";
 
 		Matrix userMatrix2;
 		Matrix productMatrix;
 
 		userMatrix2.readFromConsole();
-		userMatrix1 * userMatrix2;
+		productMatrix = userMatrix1 * userMatrix2;
 		productMatrix.print("Your product matrix");
 
+		// Task 1c
+		std::cout << "\nc.) Performing LU Factorization\n";
+		std::cout << "\n I do not know how to start with this tbh\n";
+		std::cout << "\n==========================================\n";
 
+		// task 1d
+		std::cout << "\nd.) Solving Ax = b by finding x = A^-1b\n";
+		std::cout << "\nDoes this mean Right-hand side vectors?\n";
+		std::cout << "\n========================================\n";
 		
 	
-		std::cout << "Example 1: Basic matrix operations\n";
+		/*std::cout << "Example 1: Basic matrix operations\n";
 		std::cout << "===================================\n";
 
 		std::vector<std::vector<int>> A_data = {
@@ -451,7 +462,7 @@ int main() {
 			std::vector<int> b_file = { 8, -11, -3 };
 			std::vector<int> x_file = fileMatrix.solve(b_file);
 			A.printVector(x_file, "Solution for file matrix");
-		}
+		}*/
 
 	}
 	catch (const std::exception& e) {
