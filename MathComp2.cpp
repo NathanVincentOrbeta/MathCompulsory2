@@ -29,7 +29,7 @@ Matrix::Matrix(const std::vector<std::vector<double>>& matrix_data) {
 	}
 }
 
-Matrix::Matrix(int m = 0, int n = 0) : rows(m), cols(n) {
+Matrix::Matrix(int m, int n) : rows(m), cols(n) {
 
 	if (m > 0 && n > 0) {
 
@@ -101,7 +101,7 @@ void Matrix::readFromConsole() {
 	}
 }
 
-void Matrix::print(const std::string& name = "") const {
+void Matrix::print(const std::string& name) const {
 
 	if (!name.empty()) {
 
@@ -123,7 +123,7 @@ void Matrix::print(const std::string& name = "") const {
 	std::cout << std::endl;
 }
 
-void Matrix::printVector(const std::vector<double>& vec, const std::string& name = "") {
+void Matrix::printVector(const std::vector<double>& vec, const std::string& name) {
 
 	if (!name.empty()) {
 
