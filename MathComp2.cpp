@@ -332,9 +332,21 @@ int main() {
 		std::cout << "a) reading and printing matrices\n";
 		std::cout << "=================================\n";
 
-		Matrix userMatrix;
-		userMatrix.readFromConsole();
-		userMatrix.print("Your matrix");
+		Matrix userMatrix1;
+		userMatrix1.readFromConsole();
+		userMatrix1.print("Your matrix");
+
+		std::cout << "\nb.) multiplying matrices\n";
+		std::cout << "===========================\n";
+
+		Matrix userMatrix2;
+		Matrix productMatrix;
+
+		userMatrix2.readFromConsole();
+		userMatrix1 * userMatrix2;
+		productMatrix.print("Your product matrix");
+
+
 		
 	
 		std::cout << "Example 1: Basic matrix operations\n";
