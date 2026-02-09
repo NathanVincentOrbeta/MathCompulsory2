@@ -14,7 +14,7 @@ int Matrix::getCols() const {
 	return cols;
 }
 
-Matrix::Matrix(const std::vector<std::vector<double>>& matrix_data) {
+Matrix::Matrix(const std::vector<std::vector<int>>& matrix_data) {
 
 	rows = static_cast<int>(matrix_data.size());
 	if (rows > 0) {
@@ -33,11 +33,11 @@ Matrix::Matrix(int m, int n) : rows(m), cols(n) {
 
 	if (m > 0 && n > 0) {
 
-		data.resize(m, std::vector<double>(n, 0.0));
+		data.resize(m, std::vector<int>(n, 0));
 	}
 }
 
-double& Matrix::operator()(int i, int j) {
+int& Matrix::operator()(int i, int j) {
 
 	if (i < 0 || i >= rows || j < 0 || j >= cols) {
 
@@ -47,7 +47,7 @@ double& Matrix::operator()(int i, int j) {
 	return data[i][j];
 }
 
-const double& Matrix::operator()(int i, int j) const {
+const int& Matrix::operator()(int i, int j) const {
 
 	if (i < 0 || i >= rows || j < 0 || j >= cols) {
 
@@ -67,7 +67,7 @@ void Matrix::readFromFile(const std::string& filename) {
 	}
 
 	file >> rows >> cols;
-	data.resize(rows, std::vector<double>(cols));
+	data.resize(rows, std::vector<int>(cols));
 
 	for (int i = 0; i < rows; i++) {
 
@@ -88,7 +88,7 @@ void Matrix::readFromConsole() {
 	std::cout << "Enter Number of rows and columns: ";
 	std::cin >> rows >> cols;
 
-	data.resize(rows, std::vector<double>(cols));
+	data.resize(rows, std::vector<int>(cols));
 
 	std::cout << "Enter matrix elements row by row: \n";
 
@@ -123,7 +123,7 @@ void Matrix::print(const std::string& name) const {
 	std::cout << std::endl;
 }
 
-void Matrix::printVector(const std::vector<double>& vec, const std::string& name) {
+void Matrix::printVector(const std::vector<int>& vec, const std::string& name) {
 
 	if (!name.empty()) {
 
@@ -208,7 +208,7 @@ std::pair<Matrix, Matrix> Matrix::luFactorization() const {
 	return std::make_pair(L, U);
 }
 
-std::vector<double> Matrix::solve(const  std::vector<double>& b) const {
+std::vector<int> Matrix::solve(const  std::vector<int>& b) const {
 
 	if (rows != cols) {
 
@@ -238,7 +238,7 @@ std::vector<double> Matrix::solve(const  std::vector<double>& b) const {
 		}
 	}
 
-	std::vector<double> x(n, 0.0);
+	std::vector<int> x(n, 0);
 
 	for (int i = n - 1; i >= 0; i--) {
 
@@ -272,10 +272,10 @@ Matrix Matrix::inverse() const {
 
 	for (int col = 0; col < n; col++) {
 
-		std::vector<double> b(n, 0.0);
-		b[col] = 1.0;
+		std::vector<int> b(n, 0);
+		b[col] = 1;
 
-		std::vector<double> x = solve(b);
+		std::vector<int> x = solve(b);
 
 		for (int row = 0; row < n; row++) {
 
@@ -300,7 +300,7 @@ Matrix Matrix::transpose() const {
 	return result;
 }
 
-std::vector<double> Matrix::solveUsingInverse(const std::vector<double>& b) const {
+std::vector<int> Matrix::solveUsingInverse(const std::vector<int>& b) const {
 
 	Matrix A_inv = inverse();
 
@@ -313,7 +313,7 @@ std::vector<double> Matrix::solveUsingInverse(const std::vector<double>& b) cons
 
 	Matrix x_mat = A_inv * b_mat;
 
-	std::vector<double> x(b.size());
+	std::vector<int> x(b.size());
 
 	for (size_t i = 0; i < b.size(); i++) {
 
@@ -328,11 +328,19 @@ int main() {
 	std::cout << "=== Matrix Operations and LU Factorization Program (Math Compulsory 2 - Nathan) === \n\n";
 
 	try {
+
+		std::cout << "a) reading and printing matrices\n";
+		std::cout << "=================================\n";
+
+		Matrix userMatrix;
+		userMatrix.readFromConsole();
+		userMatrix.print("Your matrix");
+		
 	
 		std::cout << "Example 1: Basic matrix operations\n";
 		std::cout << "===================================\n";
 
-		std::vector<std::vector<double>> A_data = {
+		std::vector<std::vector<int>> A_data = {
 
 			{4, 3, 2},
 			{1, 2, 3},
@@ -356,13 +364,13 @@ int main() {
 		std::cout << "\nExample 2: Solving linear system Ax = b\n";
 		std::cout << "==========================================\n";
 
-		std::vector<double> b = { 1, 2, 3 };
+		std::vector<int> b = { 1, 2, 3 };
 		A.printVector(b, "Vector b");
 
-		std::vector<double> x = A.solve(b);
+		std::vector<int> x = A.solve(b);
 		A.printVector(x, "Solution x (using LU factorization");
 
-		std::vector<double> x_inv = A.solveUsingInverse(b);
+		std::vector<int> x_inv = A.solveUsingInverse(b);
 		A.printVector(x_inv, "Solution x (using inverse)");
 
 		std::cout << "\nExample 3: Matrix inverse\n";
@@ -390,7 +398,7 @@ int main() {
 			if (userMatrix.getRows() == userMatrix.getCols()) {
 
 				int n = userMatrix.getRows();
-				std::vector<double> b_user(n);
+				std::vector<int> b_user(n);
 
 				std::cout << "Enter right-hand side vector b (size " << n << "):\n";
 
@@ -401,7 +409,7 @@ int main() {
 
 				A.printVector(b_user, "Vector b");
 
-				std::vector<double> x_user = userMatrix.solve(b_user);
+				std::vector<int> x_user = userMatrix.solve(b_user);
 				A.printVector(x_user, "Solution x");
 
 				Matrix user_inv = userMatrix.inverse();
@@ -428,8 +436,8 @@ int main() {
 			fileMatrix.readFromFile("sample_matrix.txt");
 			fileMatrix.print("Matrix from file");
 
-			std::vector<double> b_file = { 8, -11, -3 };
-			std::vector<double> x_file = fileMatrix.solve(b_file);
+			std::vector<int> b_file = { 8, -11, -3 };
+			std::vector<int> x_file = fileMatrix.solve(b_file);
 			A.printVector(x_file, "Solution for file matrix");
 		}
 
