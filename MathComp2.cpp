@@ -184,7 +184,7 @@ std::pair<Matrix, Matrix> Matrix::luFactorization() const {
 
 	for (int i = 0; i < n; i++) {
 
-		L(i, i) = 1.0;
+		L(i, i) = 1;
 	}
 
 	for (int k = 0; k < n - 1; k++) {
@@ -226,7 +226,7 @@ std::vector<int> Matrix::solve(const  std::vector<int>& b) const {
 	Matrix L = luResult.first;
 	Matrix U = luResult.second;
 
-	std::vector<double> y(n, 0.0);
+	std::vector<int> y(n, 0);
 
 	for (int i = 0; i < n; i++) {
 
@@ -351,30 +351,12 @@ int main() {
 
 		// Task 1c
 		std::cout << "\nc.) Performing LU Factorization\n";
-		std::cout << "\n I do not know how to start with this tbh\n";
+		std::cout << "\nOnly accepts perfect squares\n";
 		std::cout << "\n==========================================\n";
 
-		// task 1d
-		std::cout << "\nd.) Solving Ax = b by finding x = A^-1b\n";
-		std::cout << "\nDoes this mean Right-hand side vectors?\n";
-		std::cout << "\n========================================\n";
-		
-	
-		/*std::cout << "Example 1: Basic matrix operations\n";
-		std::cout << "===================================\n";
-
-		std::vector<std::vector<int>> A_data = {
-
-			{4, 3, 2},
-			{1, 2, 3},
-			{2, 1, 4}
-		};
-
-		Matrix A(A_data);
-		A.print("Matrix A");
-
-		std::cout << "LU factorization of A:\n";
-		std::pair<Matrix, Matrix> luResult = A.luFactorization();
+		productMatrix.print("This is going to be used for LU decomposition");
+		std::cout << "LU factorization for the obtained product matrix: \n";
+		std::pair<Matrix, Matrix> luResult = productMatrix.luFactorization();
 		Matrix L = luResult.first;
 		Matrix U = luResult.second;
 
@@ -382,9 +364,14 @@ int main() {
 		U.print("U matrix");
 
 		Matrix LU = L * U;
-		LU.print("L * U (should equal A)");
+		LU.print("L * U (Should be equal to the original product matrix)");
 
-		std::cout << "\nExample 2: Solving linear system Ax = b\n";
+		// task 1d
+		std::cout << "\nd.) Solving Ax = b by finding x = A^-1b\n";
+		std::cout << "\nDoes this mean Right-hand side vectors?\n";
+		std::cout << "\n========================================\n";
+
+		/*std::cout << "\nExample 2: Solving linear system Ax = b\n";
 		std::cout << "==========================================\n";
 
 		std::vector<int> b = { 1, 2, 3 };
