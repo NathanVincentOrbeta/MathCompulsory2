@@ -153,7 +153,7 @@ Matrix Matrix::multiply(const Matrix& other) const {
 
 		for (int j = 0; j < other.cols; j++) {
 
-			double sum = 0.0;
+			int sum = 0;
 			for (int k = 0; k < cols; k++) {
 
 				sum += data[i][k] * other.data[k][j];
@@ -352,7 +352,7 @@ int main() {
 		// Task 1c
 		std::cout << "\nc.) Performing LU Factorization\n";
 		std::cout << "\nOnly accepts perfect squares\n";
-		std::cout << "\n==========================================\n";
+		std::cout << "\n=============================\n";
 
 		productMatrix.print("This is going to be used for LU decomposition");
 		std::cout << "LU factorization for the obtained product matrix: \n";
@@ -368,89 +368,20 @@ int main() {
 
 		// task 1d
 		std::cout << "\nd.) Solving Ax = b by finding x = A^-1b\n";
-		std::cout << "\nDoes this mean Right-hand side vectors?\n";
-		std::cout << "\n========================================\n";
+		std::cout << "\nTask in progress\n";
+		std::cout << "\n=================\n";
 
-		/*std::cout << "\nExample 2: Solving linear system Ax = b\n";
-		std::cout << "==========================================\n";
-
-		std::vector<int> b = { 1, 2, 3 };
-		A.printVector(b, "Vector b");
-
-		std::vector<int> x = A.solve(b);
-		A.printVector(x, "Solution x (using LU factorization");
-
-		std::vector<int> x_inv = A.solveUsingInverse(b);
-		A.printVector(x_inv, "Solution x (using inverse)");
-
-		std::cout << "\nExample 3: Matrix inverse\n";
-		std::cout << "============================\n";
-
-		Matrix A_inv = A.inverse();
-		A_inv.print("Inverse of A");
-
-		Matrix I = A * A_inv;
-		I.print("A * A^{-1} (should be identity matrix");
-
-		std::cout << "\nExample 4: User input demonstration\n";
-		std::cout << "======================================\n";
-
-		char choice;
-		std::cout << "Do you want to enter your own matrix? (y/n): ";
-		std::cin >> choice;
-
-		if (choice == 'y' || choice == 'Y') {
-
-			Matrix userMatrix;
-			userMatrix.readFromConsole();
-			userMatrix.print("Your matrix");
-
-			if (userMatrix.getRows() == userMatrix.getCols()) {
-
-				int n = userMatrix.getRows();
-				std::vector<int> b_user(n);
-
-				std::cout << "Enter right-hand side vector b (size " << n << "):\n";
-
-				for (int i = 0; i < n; i++) {
-
-					std::cin >> b_user[i];
-				}
-
-				A.printVector(b_user, "Vector b");
-
-				std::vector<int> x_user = userMatrix.solve(b_user);
-				A.printVector(x_user, "Solution x");
-
-				Matrix user_inv = userMatrix.inverse();
-				user_inv.print("Inverse of your matrix");
-			}
+		std::vector<int> b(productMatrix.getRows());
+		for (int i = 0; i < productMatrix.getRows(); ++i) {
+			b[i] = productMatrix(i, 0); // Use first column
 		}
+		productMatrix.printVector(b, "Vector b (first column of product matrix)");
 
-		std::cout << "\nExample 5: File input demonstration\n";
-		std::cout << "======================================\n";
+		std::vector<int> x = productMatrix.solve(b);
+		productMatrix.printVector(x, "Solution x (using LU factorization/decomposition");
 
-		std::ofstream sampleFile("sample_matrix.txt");
-
-		if (sampleFile.is_open()) {
-
-			sampleFile << "3 3\n";
-			sampleFile << "2 1 -1\n";
-			sampleFile << "-3 -1 2\n";
-			sampleFile << "-2 1 2\n";
-			sampleFile.close();
-
-			std::cout << "Created sample file: sample_matrix.txt\n";
-
-			Matrix fileMatrix;
-			fileMatrix.readFromFile("sample_matrix.txt");
-			fileMatrix.print("Matrix from file");
-
-			std::vector<int> b_file = { 8, -11, -3 };
-			std::vector<int> x_file = fileMatrix.solve(b_file);
-			A.printVector(x_file, "Solution for file matrix");
-		}*/
-
+		std::vector<int> x_inv = productMatrix.solveUsingInverse(b);
+		productMatrix.printVector(x_inv, "Solution x (Using the Inverse method");
 	}
 	catch (const std::exception& e) {
 
