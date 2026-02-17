@@ -14,7 +14,7 @@ int Matrix::getCols() const {
 	return cols;
 }
 
-Matrix::Matrix(const std::vector<std::vector<int>>& matrix_data) {
+Matrix::Matrix(const std::vector<std::vector<double>>& matrix_data) {
 
 	rows = static_cast<int>(matrix_data.size());
 	if (rows > 0) {
@@ -29,15 +29,15 @@ Matrix::Matrix(const std::vector<std::vector<int>>& matrix_data) {
 	}
 }
 
-Matrix::Matrix(int m, int n) : rows(m), cols(n) {
+Matrix::Matrix(double m, double n) : rows(m), cols(n) {
 
 	if (m > 0 && n > 0) {
 
-		data.resize(m, std::vector<int>(n, 0));
+		data.resize(m, std::vector<double>(n, 0));
 	}
 }
 
-int& Matrix::operator()(int i, int j) {
+double& Matrix::operator()(double i, double j) {
 
 	if (i < 0 || i >= rows || j < 0 || j >= cols) {
 
@@ -47,7 +47,7 @@ int& Matrix::operator()(int i, int j) {
 	return data[i][j];
 }
 
-const int& Matrix::operator()(int i, int j) const {
+const double& Matrix::operator()(double i, double j) const {
 
 	if (i < 0 || i >= rows || j < 0 || j >= cols) {
 
@@ -67,11 +67,11 @@ void Matrix::readFromFile(const std::string& filename) {
 	}
 
 	file >> rows >> cols;
-	data.resize(rows, std::vector<int>(cols));
+	data.resize(rows, std::vector<double>(cols));
 
-	for (int i = 0; i < rows; i++) {
+	for (double i = 0; i < rows; i++) {
 
-		for (int j = 0; j < cols; j++) {
+		for (double j = 0; j < cols; j++) {
 
 			if (!(file >> data[i][j])) {
 
@@ -88,13 +88,13 @@ void Matrix::readFromConsole() {
 	std::cout << "Enter Number of rows and columns: ";
 	std::cin >> rows >> cols;
 
-	data.resize(rows, std::vector<int>(cols));
+	data.resize(rows, std::vector<double>(cols));
 
 	std::cout << "Enter matrix elements row by row: \n";
 
-	for (int i = 0; i < rows; i++) {
+	for (double i = 0; i < rows; i++) {
 
-		for (int j = 0; j < cols; j++) {
+		for (double j = 0; j < cols; j++) {
 
 			std::cin >> data[i][j];
 		}
@@ -110,9 +110,9 @@ void Matrix::print(const std::string& name) const {
 
 	std::cout << std::fixed << std::setprecision(6);
 
-	for (int i = 0; i < rows; i++) {
+	for (double i = 0; i < rows; i++) {
 
-		for (int j = 0; j < cols; j++) {
+		for (double j = 0; j < cols; j++) {
 
 			std::cout << std::setw(12) << data[i][j] << " ";
 		}
@@ -123,7 +123,7 @@ void Matrix::print(const std::string& name) const {
 	std::cout << std::endl;
 }
 
-void Matrix::printVector(const std::vector<int>& vec, const std::string& name) {
+void Matrix::printVector(const std::vector<double>& vec, const std::string& name) {
 
 	if (!name.empty()) {
 
@@ -149,12 +149,12 @@ Matrix Matrix::multiply(const Matrix& other) const {
 
 	Matrix result(rows, other.cols);
 
-	for (int i = 0; i < rows; i++) {
+	for (double i = 0; i < rows; i++) {
 
-		for (int j = 0; j < other.cols; j++) {
+		for (double j = 0; j < other.cols; j++) {
 
-			int sum = 0;
-			for (int k = 0; k < cols; k++) {
+			double sum = 0;
+			for (double k = 0; k < cols; k++) {
 
 				sum += data[i][k] * other.data[k][j];
 			}
@@ -182,23 +182,23 @@ std::pair<Matrix, Matrix> Matrix::luFactorization() const {
 	Matrix L(n, n);
 	Matrix U = *this;
 
-	for (int i = 0; i < n; i++) {
+	for (double i = 0; i < n; i++) {
 
 		L(i, i) = 1;
 	}
 
-	for (int k = 0; k < n - 1; k++) {
+	for (double k = 0; k < n - 1; k++) {
 
 		if (std::abs(U(k, k)) < 1e-12) {
 
 			throw std::runtime_error("Matrix is singular or nearly singular");
 		}
 
-		for (int i = k + 1; i < n; i++) {
+		for (double i = k + 1; i < n; i++) {
 
 			L(i, k) = U(i, k) / U(k, k);
 
-			for (int j = k; j < n; j++) {
+			for (double j = k; j < n; j++) {
 
 				U(i, j) = U(i, j) - L(i, k) * U(k, j);
 			}
@@ -208,7 +208,7 @@ std::pair<Matrix, Matrix> Matrix::luFactorization() const {
 	return std::make_pair(L, U);
 }
 
-std::vector<int> Matrix::solve(const  std::vector<int>& b) const {
+std::vector<double> Matrix::solve(const  std::vector<double>& b) const {
 
 	if (rows != cols) {
 
@@ -220,27 +220,27 @@ std::vector<int> Matrix::solve(const  std::vector<int>& b) const {
 		throw std::invalid_argument("Matrix and vector dimensions don't match'");
 	}
 
-	int n = rows;
+	double n = rows;
 
 	std::pair<Matrix, Matrix> luResult = luFactorization();
 	Matrix L = luResult.first;
 	Matrix U = luResult.second;
 
-	std::vector<int> y(n, 0);
+	std::vector<double> y(n, 0);
 
-	for (int i = 0; i < n; i++) {
+	for (double i = 0; i < n; i++) {
 
 		y[i] = b[i];
 
-		for (int j = 0; j < i; j++) {
+		for (double j = 0; j < i; j++) {
 
 			y[i] -= L(i, j) * y[j];
 		}
 	}
 
-	std::vector<int> x(n, 0);
+	std::vector<double> x(n, 0);
 
-	for (int i = n - 1; i >= 0; i--) {
+	for (double i = n - 1; i >= 0; i--) {
 
 		if (std::abs(U(i, i)) < 1e-12) {
 
@@ -249,7 +249,7 @@ std::vector<int> Matrix::solve(const  std::vector<int>& b) const {
 
 		x[i] = y[i];
 
-		for (int j = i + 1; j < n; j++) {
+		for (double j = i + 1; j < n; j++) {
 
 			x[i] -= U(i, j) * x[j];
 		}
@@ -267,17 +267,17 @@ Matrix Matrix::inverse() const {
 		throw std::invalid_argument("Matrix must be square to find inverse");
 	}
 
-	int n = rows;
+	double n = rows;
 	Matrix inv(n, n);
 
-	for (int col = 0; col < n; col++) {
+	for (double col = 0; col < n; col++) {
 
-		std::vector<int> b(n, 0);
+		std::vector<double> b(n, 0);
 		b[col] = 1;
 
-		std::vector<int> x = solve(b);
+		std::vector<double> x = solve(b);
 
-		for (int row = 0; row < n; row++) {
+		for (double row = 0; row < n; row++) {
 
 			inv(row, col) = x[row];
 		}
@@ -289,9 +289,9 @@ Matrix Matrix::inverse() const {
 Matrix Matrix::transpose() const {
 
 	Matrix result(cols, rows);
-	for (int i = 0; i < rows; i++) {
+	for (double i = 0; i < rows; i++) {
 
-		for (int j = 0; j < cols; j++) {
+		for (double j = 0; j < cols; j++) {
 
 			result(j, i) = data[i][j];
 		}
@@ -300,7 +300,7 @@ Matrix Matrix::transpose() const {
 	return result;
 }
 
-std::vector<int> Matrix::solveUsingInverse(const std::vector<int>& b) const {
+std::vector<double> Matrix::solveUsingInverse(const std::vector<double>& b) const {
 
 	Matrix A_inv = inverse();
 
@@ -313,7 +313,7 @@ std::vector<int> Matrix::solveUsingInverse(const std::vector<int>& b) const {
 
 	Matrix x_mat = A_inv * b_mat;
 
-	std::vector<int> x(b.size());
+	std::vector<double> x(b.size());
 
 	for (size_t i = 0; i < b.size(); i++) {
 
@@ -371,16 +371,16 @@ int main() {
 		std::cout << "\nTask in progress\n";
 		std::cout << "\n=================\n";
 
-		std::vector<int> b(productMatrix.getRows());
-		for (int i = 0; i < productMatrix.getRows(); ++i) {
+		std::vector<double> b(productMatrix.getRows());
+		for (double i = 0; i < productMatrix.getRows(); ++i) {
 			b[i] = productMatrix(i, 0); // Use first column
 		}
 		productMatrix.printVector(b, "Vector b (first column of product matrix)");
 
-		std::vector<int> x = productMatrix.solve(b);
+		std::vector<double> x = productMatrix.solve(b);
 		productMatrix.printVector(x, "Solution x (using LU factorization/decomposition");
 
-		std::vector<int> x_inv = productMatrix.solveUsingInverse(b);
+		std::vector<double> x_inv = productMatrix.solveUsingInverse(b);
 		productMatrix.printVector(x_inv, "Solution x (Using the Inverse method");
 	}
 	catch (const std::exception& e) {
