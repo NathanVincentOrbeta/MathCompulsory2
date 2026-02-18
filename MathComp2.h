@@ -33,6 +33,8 @@ public:
 	void print(const std::string& name = "") const;
 	void printVector(const std::vector<double>& vec, const std::string& name = "");
 
+	std::vector<double> inputYValues() const;
+
 	Matrix multiply(const Matrix& other) const;
 	Matrix operator*(const Matrix& other) const;
 

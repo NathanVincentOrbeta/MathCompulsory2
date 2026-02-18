@@ -101,6 +101,23 @@ void Matrix::readFromConsole() {
 	}
 }
 
+std::vector<double> Matrix::inputYValues() const {
+
+	std::vector<double> yValues(rows);
+	
+	std::cout << "Enter y values for the system Ax = y:\n";
+	std::cout << "Matrix dimensions: " << rows << "x" << cols << "\n";
+	std::cout << "You need to enter " << rows << " y values:\n";
+
+	for (double i = 0; i < rows; i++) {
+
+		std::cout << "y[" << static_cast<int>(i) << "]: ";
+		std::cin >> yValues[i];
+	}
+
+	return yValues;
+}
+
 void Matrix::print(const std::string& name) const {
 
 	if (!name.empty()) {
@@ -477,6 +494,19 @@ int main() {
 
 			Matrix inverseMatrix = userMatrix.inverse();
 			inverseMatrix.print("Inverse Matrix");
+
+			// New functionality: Input y values and solve Ax = y
+			std::cout << "g) Solving Linear System Ax = y\n";
+			std::cout << "================================\n";
+
+			std::vector<double> yValues = userMatrix.inputYValues();
+			userMatrix.printVector(yValues, "Y Values");
+
+			std::vector<double> xSolution = userMatrix.solve(yValues);
+			userMatrix.printVector(xSolution, "Solution x (using LU decomposition)");
+
+			std::vector<double> xInverseSolution = userMatrix.solveUsingInverse(yValues);
+			userMatrix.printVector(xInverseSolution, "Solution x (using inverse method)");
 		}
 
 		/*
