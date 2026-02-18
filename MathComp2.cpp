@@ -401,6 +401,43 @@ std::vector<double> Matrix::solveUsingInverse(const std::vector<double>& b) cons
 	return x;
 }
 
+std::vector<double> Matrix::multiplyInverseWithVector(const std::vector<double>& y) const {
+
+	if (rows != cols) {
+
+		throw std::invalid_argument("Matrix must be square to calculate inverse");
+	}
+
+	if (rows != static_cast<int>(y.size())) {
+
+		throw std::invalid_argument("Matrix rows must match vector size");
+	}
+
+	// Calculate the inverse matrix
+	Matrix A_inv = inverse();
+
+	// Convert vector y to a column matrix
+	Matrix y_mat(static_cast<int>(y.size()), 1);
+
+	for (size_t i = 0; i < y.size(); i++) {
+
+		y_mat(static_cast<int>(i), 0) = y[i];
+	}
+
+	// Multiply A_inv * y
+	Matrix result_mat = A_inv * y_mat;
+
+	// Convert result back to vector
+	std::vector<double> result(y.size());
+
+	for (size_t i = 0; i < y.size(); i++) {
+
+		result[i] = result_mat(static_cast<int>(i), 0);
+	}
+
+	return result;
+}
+
 double Matrix::determinant() const {
 
 	if (rows != cols) {
@@ -495,18 +532,19 @@ int main() {
 			Matrix inverseMatrix = userMatrix.inverse();
 			inverseMatrix.print("Inverse Matrix");
 
-			// New functionality: Input y values and solve Ax = y
-			std::cout << "g) Solving Linear System Ax = y\n";
-			std::cout << "================================\n";
+			std::cout << "h) Multiplying Inverse Matrix with Y Values\n";
+			std::cout << "============================================\n";
 
 			std::vector<double> yValues = userMatrix.inputYValues();
 			userMatrix.printVector(yValues, "Y Values");
 
-			std::vector<double> xSolution = userMatrix.solve(yValues);
-			userMatrix.printVector(xSolution, "Solution x (using LU decomposition)");
+			// Use the new function
+			std::vector<double> xResult = userMatrix.multiplyInverseWithVector(yValues);
+			userMatrix.printVector(xResult, "Result x = A^(-1) * y");
 
-			std::vector<double> xInverseSolution = userMatrix.solveUsingInverse(yValues);
-			userMatrix.printVector(xInverseSolution, "Solution x (using inverse method)");
+			// Verify by also showing the existing method
+			std::vector<double> xSolution = userMatrix.solve(yValues);
+			userMatrix.printVector(xSolution, "Verification using LU decomposition");
 		}
 
 		/*
