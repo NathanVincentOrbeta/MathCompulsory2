@@ -1,4 +1,4 @@
-#include "MathComp2.h"
+﻿#include "MathComp2.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -268,7 +268,7 @@ std::vector<double> Matrix::solve(const  std::vector<double>& b) const {
 
 		for (double j = i + 1; j < n; j++) {
 
-			x[i] -= U(i, j) * x[j];
+		x[i] -= U(i, j) * x[j];
 		}
 
 		x[i] /= U(i, i);
@@ -500,12 +500,116 @@ double Matrix::determinant() const {
 	return det;
 }
 
+void solveLeastSquares() {
+    std::cout << "=== Least Squares Line Fitting ===\n";
+    
+    // Points: (4,3), (0,1), (2,0), (3,4)
+    // For line y = mx + c, we need matrix A = [x_i, 1] and vector b = [y_i]
+    std::vector<std::vector<double>> A_data = {
+        {4, 1},  // x=4, constant term=1
+        {0, 1},  // x=0, constant term=1  
+        {2, 1},  // x=2, constant term=1
+        {3, 1}   // x=3, constant term=1
+    };
+    
+    Matrix A(A_data);
+    std::vector<double> b = {3, 1, 0, 4}; // y values
+    
+    A.print("Matrix A (x values and constants)");
+    A.printVector(b, "Vector b (y values)");
+    
+    // Calculate A^T
+    Matrix A_T = A.transpose();
+    A_T.print("A transpose");
+    
+    // Calculate A^T * A
+    Matrix ATA = A_T * A;
+    ATA.print("A^T * A");
+    
+    // Calculate A^T * b
+    Matrix b_mat(4, 1);
+    for(int i = 0; i < 4; i++) {
+        b_mat(i, 0) = b[i];
+    }
+    Matrix ATb_mat = A_T * b_mat;
+    
+    std::vector<double> ATb = {ATb_mat(0, 0), ATb_mat(1, 0)};
+    A.printVector(ATb, "A^T * b");
+    
+    // Solve (A^T * A) * x = A^T * b
+    std::vector<double> solution = ATA.solve(ATb);
+    A.printVector(solution, "Solution [slope, intercept]");
+    
+    std::cout << "Line equation: y = " << solution[0] << "x + " << solution[1] << std::endl << std::endl;
+}
+
+void solvePolynomialInterpolation() {
+    std::cout << "=== Polynomial Interpolation with Derivatives ===\n";
+    
+    // For p(x) = ax³ + bx² + cx + d
+    // p'(x) = 3ax² + 2bx + c
+    
+    double pi = 3.14159265359;
+    
+    // Constraint matrix:
+    // p(1) = 0:   a + b + c + d = 0
+    // p(π) = 0:   a*π³ + b*π² + c*π + d = 0  
+    // p'(1) = 1:  3a + 2b + c = 1
+    // p'(π) = -1: 3a*π² + 2b*π + c = -1
+    
+    std::vector<std::vector<double>> constraint_matrix = {
+        {1, 1, 1, 1},                           // p(1) = 0
+        {pi*pi*pi, pi*pi, pi, 1},              // p(π) = 0
+        {3, 2, 1, 0},                          // p'(1) = 1
+        {3*pi*pi, 2*pi, 1, 0}                  // p'(π) = -1
+    };
+    
+    Matrix A(constraint_matrix);
+    std::vector<double> b = {0, 0, 1, -1};
+    
+    A.print("Constraint Matrix A");
+    A.printVector(b, "Right-hand side b");
+    
+    std::vector<double> coefficients = A.solve(b);
+    A.printVector(coefficients, "Polynomial coefficients [a, b, c, d]");
+    
+    std::cout << "Polynomial: p(x) = " << coefficients[0] << "x³ + " 
+              << coefficients[1] << "x² + " << coefficients[2] << "x + " 
+              << coefficients[3] << std::endl << std::endl;
+}
+
+void solvePointInterpolation() {
+    std::cout << "=== Polynomial Interpolation through Points ===\n";
+    
+    // Points: (0,1), (1/2, 9/16), (3/2, 5/16), (3,4)
+    // For polynomial p(x) = ax³ + bx² + cx + d
+    
+    std::vector<std::vector<double>> point_matrix = {
+        {0, 0, 0, 1},                    // x=0: d = 1
+        {0.125, 0.25, 0.5, 1},          // x=1/2: a*(1/8) + b*(1/4) + c*(1/2) + d = 9/16
+        {3.375, 2.25, 1.5, 1},          // x=3/2: a*(27/8) + b*(9/4) + c*(3/2) + d = 5/16
+        {27, 9, 3, 1}                   // x=3: a*27 + b*9 + c*3 + d = 4
+    };
+    
+    Matrix A(point_matrix);
+    std::vector<double> b = {1, 9.0/16.0, 5.0/16.0, 4};
+    
+    A.print("Vandermonde Matrix A");
+    A.printVector(b, "y-values b");
+    
+    std::vector<double> coefficients = A.solve(b);
+    A.printVector(coefficients, "Polynomial coefficients [a, b, c, d]");
+    
+    std::cout << "Polynomial: p(x) = " << coefficients[0] << "x³ + " 
+              << coefficients[1] << "x² + " << coefficients[2] << "x + " 
+              << coefficients[3] << std::endl << std::endl;
+}
+
 int main() {
-
-	std::cout << "=== Matrix Operations and LU Factorization Program (Math Compulsory 2 - Nathan) === \n\n";
-
-	try {
-		// Task 1e - Determinant Calculation
+    std::cout << "=== Advanced Matrix Applications (Math Compulsory 2 - Nathan) === \n\n";
+    
+    //try {
+        // Task 1e - Determinant Calculation
 		std::cout << "e) Calculating Matrix Determinant\n";
 		std::cout << "==================================\n";
 
@@ -541,11 +645,16 @@ int main() {
 			// Use the new function
 			std::vector<double> xResult = userMatrix.multiplyInverseWithVector(yValues);
 			userMatrix.printVector(xResult, "Result x = A^(-1) * y");
-
-			// Verify by also showing the existing method
-			std::vector<double> xSolution = userMatrix.solve(yValues);
-			userMatrix.printVector(xSolution, "Verification using LU decomposition");
 		}
+		
+		solveLeastSquares();
+		//result.print("task 1");
+
+		solvePolynomialInterpolation();
+		//result1.print("task 2");
+
+		solvePointInterpolation();
+		//result2.print("task 3");
 
 		/*
 		// Task 1a
@@ -601,12 +710,12 @@ int main() {
 
 		std::vector<double> x_inv = productMatrix.solveUsingInverse(b);
 		productMatrix.printVector(x_inv, "Solution x (Using the Inverse method");*/
-	}
+	/*}
 	catch (const std::exception& e) {
 
 		std::cerr << "Error: " << e.what() << std::endl;
 		return 1;
-	}
+	}*/
 
 	std::cout << "\nProgram completed successfully!\n";
 	return 0;
