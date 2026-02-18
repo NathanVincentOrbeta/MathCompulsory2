@@ -267,19 +267,80 @@ Matrix Matrix::inverse() const {
 		throw std::invalid_argument("Matrix must be square to find inverse");
 	}
 
-	double n = rows;
+	double det = determinant();
+
+	if (std::abs(det) < 1e-12) {
+
+		throw std::runtime_error("Matrix is singular (determinant is zero), inverse does not exist");
+	}
+
+	int n = rows;
+
+	// For 1x1 matrix
+	if (n == 1) {
+
+		Matrix inv(1, 1);
+		inv(0, 0) = 1.0 / data[0][0];
+		return inv;
+	}
+
+	// For 2x2 matrix
+	if (n == 2) {
+
+		Matrix inv(2, 2);
+		inv(0, 0) = data[1][1] / det;
+		inv(0, 1) = -data[0][1] / det;
+		inv(1, 0) = -data[1][0] / det;
+		inv(1, 1) = data[0][0] / det;
+		return inv;
+	}
+
+	// For larger matrices, use cofactor method
+	Matrix adjugate(n, n);
+
+	// Calculate cofactor matrix
+	for (double i = 0; i < n; i++) {
+
+		for (double j = 0; j < n; j++) {
+
+			// Create minor matrix by removing row i and column j
+			Matrix minor(n - 1, n - 1);
+
+			double minorRow = 0;
+			for (double row = 0; row < n; row++) {
+
+				if (row == i) continue;
+
+				double minorCol = 0;
+				for (double col = 0; col < n; col++) {
+
+					if (col == j) continue;
+
+					minor(minorRow, minorCol) = data[row][col];
+					minorCol++;
+				}
+				minorRow++;
+			}
+
+			// Calculate cofactor: (-1)^(i+j) * determinant of minor
+			double cofactor = minor.determinant();
+			if (static_cast<int>(i + j) % 2 == 1) {
+
+				cofactor = -cofactor;
+			}
+
+			// Adjugate is transpose of cofactor matrix
+			adjugate(j, i) = cofactor;
+		}
+	}
+
+	// Inverse = adjugate / determinant
 	Matrix inv(n, n);
+	for (double i = 0; i < n; i++) {
 
-	for (double col = 0; col < n; col++) {
+		for (double j = 0; j < n; j++) {
 
-		std::vector<double> b(n, 0);
-		b[col] = 1;
-
-		std::vector<double> x = solve(b);
-
-		for (double row = 0; row < n; row++) {
-
-			inv(row, col) = x[row];
+			inv(i, j) = adjugate(i, j) / det;
 		}
 	}
 
@@ -402,6 +463,21 @@ int main() {
 		double det = userMatrix.determinant();
 		std::cout << std::fixed << std::setprecision(6);
 		std::cout << "Determinant: " << det << std::endl << std::endl;
+
+		// Matrix Inverse Calculation
+		std::cout << "f) Calculating Matrix Inverse (using determinant method)\n";
+		std::cout << "========================================================\n";
+
+		if (std::abs(det) < 1e-12) {
+
+			std::cout << "Matrix is singular (determinant is zero or nearly zero).\n";
+			std::cout << "The inverse does not exist.\n\n";
+		}
+		else {
+
+			Matrix inverseMatrix = userMatrix.inverse();
+			inverseMatrix.print("Inverse Matrix");
+		}
 
 		/*
 		// Task 1a
