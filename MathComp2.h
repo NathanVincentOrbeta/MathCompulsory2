@@ -43,4 +43,6 @@ public:
 	Matrix transpose() const;
 	
 	std::vector<double> solveUsingInverse(const std::vector<double>& b) const;
+
+	double determinant() const;
 };

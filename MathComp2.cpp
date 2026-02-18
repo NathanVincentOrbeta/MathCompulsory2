@@ -323,12 +323,87 @@ std::vector<double> Matrix::solveUsingInverse(const std::vector<double>& b) cons
 	return x;
 }
 
+double Matrix::determinant() const {
+
+	if (rows != cols) {
+
+		throw std::invalid_argument("Determinant can only be calculated for square matrices");
+	}
+
+	int n = rows;
+
+	// Handle base cases
+	if (n == 1) {
+
+		return data[0][0];
+	}
+
+	if (n == 2) {
+
+		return data[0][0] * data[1][1] - data[0][1] * data[1][0];
+	}
+
+	if (n == 3) {
+
+		return data[0][0] * (data[1][1] * data[2][2] - data[1][2] * data[2][1])
+			- data[0][1] * (data[1][0] * data[2][2] - data[1][2] * data[2][0])
+			+ data[0][2] * (data[1][0] * data[2][1] - data[1][1] * data[2][0]);
+	}
+
+	// For 4x4 and larger matrices, use cofactor expansion
+	double det = 0.0;
+
+	for (double j = 0; j < n; j++) {
+
+		// Create submatrix by removing row 0 and column j
+		Matrix submatrix(n - 1, n - 1);
+
+		for (double i = 1; i < n; i++) {
+
+			double col = 0;
+			for (double k = 0; k < n; k++) {
+
+				if (k != j) {
+
+					submatrix(i - 1, col) = data[i][k];
+					col++;
+				}
+			}
+		}
+
+		// Calculate cofactor and add to determinant
+		double cofactor = data[0][j] * submatrix.determinant();
+
+		if (static_cast<int>(j) % 2 == 1) {
+
+			cofactor = -cofactor;
+		}
+
+		det += cofactor;
+	}
+
+	return det;
+}
+
 int main() {
 
 	std::cout << "=== Matrix Operations and LU Factorization Program (Math Compulsory 2 - Nathan) === \n\n";
 
 	try {
-		
+		// Task 1e - Determinant Calculation
+		std::cout << "e) Calculating Matrix Determinant\n";
+		std::cout << "==================================\n";
+
+		std::cout << "Enter a square matrix to calculate its determinant:\n";
+		Matrix userMatrix;
+		userMatrix.readFromConsole();
+		userMatrix.print("Your Matrix");
+
+		double det = userMatrix.determinant();
+		std::cout << std::fixed << std::setprecision(6);
+		std::cout << "Determinant: " << det << std::endl << std::endl;
+
+		/*
 		// Task 1a
 		std::cout << "a) reading and printing matrices\n";
 		std::cout << "=================================\n";
@@ -381,7 +456,7 @@ int main() {
 		productMatrix.printVector(x, "Solution x (using LU factorization/decomposition");
 
 		std::vector<double> x_inv = productMatrix.solveUsingInverse(b);
-		productMatrix.printVector(x_inv, "Solution x (Using the Inverse method");
+		productMatrix.printVector(x_inv, "Solution x (Using the Inverse method");*/
 	}
 	catch (const std::exception& e) {
 
